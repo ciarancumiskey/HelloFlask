@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 #Instantiate the Flask app and connect it to the database
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://obiwan:456123@localhost:5432/hellothere'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 #Create a class to represent the table we want to access
@@ -11,6 +12,11 @@ class Person(db.Model):
     __tablename__ = 'persons'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
+
+    #Return a custom string for DB queries
+    def __repr__(self):
+        return f'<Person ID: {self.id}, first name(s): {self.name.split(" ")[:-1]}, surname: {self.name.split(" ")[-1]}>'
+
 db.create_all()
 
 #Create the endpoint for the home page
